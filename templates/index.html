@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>App</title>
+  <style>
+    body {
+      width: 100vw;
+      height: 100vh;
+
+      margin: 0;
+
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+    }
+
+    h1 {
+      text-align: center;
+      font-family: Arial, Helvetica, sans-serif;
+
+      animation: fadeInUp 0.4s ease-out forwards;
+    }
+
+    p {
+      text-align: center;
+      font-family: Arial, Helvetica, sans-serif;
+
+      animation: fadeInUp 0.4s ease-out 0.2s forwards;
+      opacity: 0;
+      transform: translateY(8px);
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(8px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <h1>{{ message }}</h1>
+  <p>{{ hostname }}</p>
+</body>
+
+</html>

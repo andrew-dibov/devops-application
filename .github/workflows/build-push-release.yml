@@ -1,9 +1,9 @@
-name: update-image
+name: build-push-release
 
 on:
   push:
-    branches: [main]
-  workflow_dispatch:
+    tags:
+      - "v*"
 
 env:
   NAME: application
@@ -11,7 +11,7 @@ env:
   NAMESPACE: default
 
 jobs:
-  update-image:
+  build-push-release:
     runs-on: ubuntu-latest
     steps:
       - name: "update-image : checkout"
@@ -36,7 +36,7 @@ jobs:
           cache-to: type=gha,mode=max
           tags: |
             cr.yandex/${{ secrets.REG_ID }}/${{ env.IMAGE }}:latest
-            cr.yandex/${{ secrets.REG_ID }}/${{ env.IMAGE }}:${{ github.sha }}
+            cr.yandex/${{ secrets.REG_ID }}/${{ env.IMAGE }}:${{ github.ref_name }}
 
       - name: "update-image : setup kubectl"
         uses: azure/setup-kubectl@v3

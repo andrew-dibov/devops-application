@@ -9,7 +9,7 @@ HOST = os.environ.get('HOST', '0.0.0.0')
 PORT = int(os.environ.get('PORT', 5000))
 
 app = Flask(__name__)
-metrics = PrometheusMetrics(app)
+metrics = PrometheusMetrics(app, default_labels="application")
 metrics.info('app_info', 'Application info', version='1.0.0')
 
 @app.route('/')

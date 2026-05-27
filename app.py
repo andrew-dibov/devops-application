@@ -13,6 +13,7 @@ metrics = PrometheusMetrics(app)
 metrics.info('app_info', 'Application info', version='1.0.0')
 
 @app.route('/')
+@metrics.counter('root_requests', 'Root endpoint requests')
 def index():
     return render_template('index.html',
                            hostname=socket.gethostname(),

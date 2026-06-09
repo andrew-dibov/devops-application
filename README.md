@@ -1,33 +1,33 @@
-# Приложение
+# Application
 
-Пайплайны и Flask-приложение с экспортом метрик в Prometheus. Автоматическая сборка и публикация образа через GitHub Actions. Обновление Deployment в Kubernetes при создании тега.
+GitHub Actions пайплайны и Python Flask-приложение с экспортом метрик в Prometheus. Автоматическая сборка и публикация Docker-образа. Обновление Kubernetes Deployment при создании тега.
 
 ## Архитектура
 
-> Проект опирается на [kubernetes](https://github.com/andrew-dibov/devops-kubernetes)
+> Flask-приложение подразумевает готовность [bootstrap](https://github.com/andrew-dibov/devops-bootstrap), [network](https://github.com/andrew-dibov/devops-network) и [kubernetes](https://github.com/andrew-dibov/devops-kubernetes)
 
-### Слой 1 : Приложение : Flask + Prometheus
+### Слой 1 : Flask-приложение : Python Flask + Prometheus Exporter
 
 | Функция | Описание |
 | :-- | :-- |
-| **Веб-приложение** | HTML с сообщением и именем контейнера |
-| **Observability** | Экспорт метрик по эндпоинту `/metrics` |
-| **Параметризация** | Переменные окружения : `MESSAGE`, `HOST` и `PORT` |
+| **Веб-приложение** | HTML-страница с сообщением из переменной окружения и `hostname` контейнера |
+| **Параметризация** | Использование переменных окружения `MESSAGE`, `HOST` и `PORT` для конфигурации приложения |
+| **Observability** | Экспорт метрик приложения по эндпоинту `/metrics` |
 
 ### Слой 2 : Контейнеризация : Docker
 
-Получение исходного образа, установка зависимостей через `requirements.txt`, копирование исходников и определение команды запуска приложения.
+Dockerfile описывает получение базового образа, установку зависимостей, копирование исходного кода и определение команды запуска приложения.
 
 ### Слой 3 : CI/CD : GitHub Actions
 
-| Workflow | Триггер | Действия |
+| Пайплайн | Триггер | Действия |
 | :-- | :-- | :-- |
-| `build-push` | Push в `main` или через `workflow_dispatch` | Сборка образа -> публикация в реестре |
-| `build-push-release` | Push `tag` | `build-push` + обновление Deployment |
+| `build-push` | Push в ветку `main` или выполнение `workflow_dispatch` | Сборка Docker-образа -> публикация в реестре контейнеров |
+| `build-push-release` | Push тега | Выполнение `build-push` -> обновление Kubernetes Deployment |
 
-### Слой 4 : Автоматизация конфигурации : Bash
+### Слой 4 : Конфигурация репозитория : Bash
 
-Обновление секретов и первый запуск `build-push` :
+Bash-скрипт выполняет обновление секретов и запускает `build-push` :
 
 | Ключ | Значение |
 | :-- | :-- |
@@ -39,10 +39,10 @@
 
 | Категория | Технологии/Инструменты | Навыки |
 | :-- | :-- | :-- |
-| **CI/CD** | GitHub Actions | Настройка пайплайнов, управление секретами |
-| **Containerization** | Docker, Container Registry | Сборка образа, тегирование, оптимизация кеша |
+| **CI/CD** | GitHub Actions | Настройка пайплайнов и управление секретами |
+| **Containerization** | Docker, Container Registry | Сборка образа, тегирование образа, оптимизация кеша |
 | **Orchestration** | Kubernetes | Обновление Deployment |
-| **Programming** | Python, Flask, Flask Exporter | Микросервис с метриками и параметрами конфигурации |
+| **Programming** | Python, Flask, Flask Exporter | Микросервис с экспортом метрик и параметрами конфигурации |
 | **Security** | GitHub Secrets, Lockbox | Безопасное хранение и передача данных |
 | **Automation** | Bash, CLI | Автоматическая конфигурация репозитория |
 
